@@ -1,0 +1,24 @@
+#!/bin/bash
+# Install dev-environments tools
+
+# Check sudo permission
+[ "$UID" -eq 0 ] || { echo "ERROR: This script must be run as root."; exit 1; }
+
+BASEDIR=$(dirname "$BASH_SOURCE")
+TARGETDIR=/usr/local/bin
+
+# Copy scripts directory tree
+cp -r $BASEDIR/scripts/dev-templates $TARGETDIR
+
+# Copy the available scripts giving execution permission
+cd $BASEDIR/scripts
+for f in *.sh
+do
+  test -f "$f" || continue
+  target_name=$(basename $f .sh)
+  cp -fv "$f" $TARGETDIR/$target_name
+  chmod 755 $TARGETDIR/$target_name
+done
+
+echo "To create an environment, go to the desired folder and type dev-[lang]."
+echo "Example: 'dev-cpp' to create a folder structure for a c++ project."
